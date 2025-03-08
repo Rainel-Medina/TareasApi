@@ -19,6 +19,16 @@ namespace TareasApi.Controllers
             return Ok(await _context.Tarea.ToArrayAsync());
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Tarea>> GetTareasById(int id)
+        {
+            var tarea = await _context.Tarea.FindAsync(id);
+            if (tarea is null)
+                return NotFound();
+
+            return Ok(tarea);
+        }
+
 
 
         //static private List<Tarea> tareas = new List<Tarea>

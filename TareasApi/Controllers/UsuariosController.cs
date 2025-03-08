@@ -12,9 +12,59 @@ namespace TareasApi.Controllers
         private readonly TareasDbContext _context = context;
 
         [HttpGet]
-        public async Task<ActionResult<List<Usuarios>>> GetTareas()
+        public async Task<ActionResult<List<Usuarios>>> GetUsuarios()
         {
             return Ok(await _context.Usuarios.ToArrayAsync());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Usuarios>> GetUsuariosById(int id)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario is null)
+                return NotFound();
+
+            return Ok(usuario);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Usuarios>> AddUsuarios(Usuarios newUsuario)
+        {
+            if (newUsuario is null)
+                return BadRequest();
+
+           _context.Usuarios.Add(newUsuario);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetUsuariosById), new { id = newUsuario.Id_Usuario }, newUsuario);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUsuarios(int id, Usuarios updatedUsuarios)
+        {
+            var usuarios = await _context.Usuarios.FindAsync(id);
+            if (usuarios is null)
+                return NotFound();
+
+            usuarios.Nombre = updatedUsuarios.Nombre;
+            usuarios.Apellido = updatedUsuarios.Apellido;
+            usuarios.Sexo = updatedUsuarios.Sexo;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUsuarios(int id)
+        {
+            var usuarios = await _context.Usuarios.FindAsync(id);
+            if (usuarios is null)
+                return NotFound();
+
+           _context.Usuarios.Remove(usuarios);
+
+            return NoContent();
         }
     }
 }
