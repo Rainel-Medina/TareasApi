@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
-using TareasApi.Data;
 
 
 namespace TareasApi.EndPoints

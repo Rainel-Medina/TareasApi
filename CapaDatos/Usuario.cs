@@ -13,9 +13,9 @@ public partial class Usuario
 
     public int Sexo { get; set; }
 
-    public DateTime FechaCreacion { get; set; }
+    public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
+    public DateTime FechaActualizacion { get; set; } = DateTime.UtcNow;
 
-    public DateTime FechaActualizacion { get; set; }
 
     public virtual ICollection<Tarea> Tareas { get; set; } = new List<Tarea>();
 }

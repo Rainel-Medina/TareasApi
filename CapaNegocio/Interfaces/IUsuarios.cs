@@ -10,5 +10,7 @@ namespace CapaNegocio.Interfaces
     public interface IUsuarios
     {
         List<Usuario> GetUsuarios();
+        void AddUsuario(Usuario usuario);
+        void UpdateUsuario(Usuario usuario);
     }
 }

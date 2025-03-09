@@ -5,13 +5,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TareasApi.Data;
 
 #nullable disable
 
 namespace TareasApi.Migrations
 {
-    [DbContext(typeof(TareasDbContext))]
+    //[DbContext(typeof(TareasDbContext))]
     [Migration("20250308213838_Initial")]
     partial class Initial
     {
