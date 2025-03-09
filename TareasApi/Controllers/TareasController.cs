@@ -1,4 +1,5 @@
 ﻿using CapaDatos;
+using CapaDatos.DTO;
 using CapaNegocio.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,13 +11,19 @@ namespace TareasApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TareasController: ControllerBase
-    {
 
+    public class TareasController : ControllerBase
+    {
         ITarea _tarea;
-        public TareasController(ITarea tarea)
+        private readonly IUsuarios _usuarios;
+
+        //ICategoria _categorias; // Añadir esta línea
+
+        public TareasController(ITarea tarea, IUsuarios usuarios) // Modificar esta línea
         {
             _tarea = tarea;
+            _usuarios = usuarios; // Añadir esta línea
+            //_categorias = categorias; // Añadir esta línea
         }
 
         [HttpGet]
@@ -24,83 +31,86 @@ namespace TareasApi.Controllers
         {
             return _tarea.GetTareas();
         }
-        //private readonly TareasDbContext _context = context;
 
-        //[HttpGet]
-        //public async Task<ActionResult<List<Tarea>>> GetTareas()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Tarea>> GetTareasById(int id)
+        {
+            var tarea = await Task.Run(() => _tarea.GetTareas().Find(u => u.IdTarea == id));
+            if (tarea is null)
+                return NotFound();
+
+            return Ok(tarea);
+        }
+
+        [HttpGet("usuarios")]
+        public ActionResult<IEnumerable<Usuario>> GetUsuarios()
+        {
+            var usuarios = _usuarios.GetUsuarios();  // Método en LogicaUsuarios que devuelve todos los usuarios
+            return Ok(usuarios);
+        }
+
+        //[HttpGet("categorias")]
+        //public ActionResult<IEnumerable<Categorium>> GetCategorias()
         //{
-        //    return Ok(await _context.Tarea.ToArrayAsync());
+        //    var categorias = _categorias.GetCategorias();  // Método en LogicaCategorias que devuelve todas las categorías
+        //    return Ok(categorias);
         //}
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Tarea>> GetTareasById(int id)
-        //{
-        //    var tarea = await _context.Tarea.FindAsync(id);
-        //    if (tarea is null)
-        //        return NotFound();
+        // Endpoint para agregar una tarea
+        [HttpPost]
+        public ActionResult<Tarea> AddTareas([FromBody] TareaDTO newTareaDTO)
+        {
+            if (newTareaDTO == null)
+                return BadRequest();
 
-        //    return Ok(tarea);
-        //}
+            // Crear la tarea a partir del DTO
+            var tarea = new Tarea
+            {
+                Descripcion = newTareaDTO.Descripcion,
+                EstadoTarea = newTareaDTO.EstadoTarea,
+                IdCategoria = newTareaDTO.IdCategoria,
+                IdUsuario = newTareaDTO.IdUsuario,
+                FechaCreacion = DateTime.UtcNow, // Asigna la fecha de creación
+            };
 
+            try
+            {
+                // Añadir la tarea a la base de datos
+                _tarea.AddTareas(tarea);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
 
+            return CreatedAtAction(nameof(GetTareasById), new { id = tarea.IdTarea }, tarea);
+        }
 
-        //static private List<Tarea> tareas = new List<Tarea>
-        //{
-        //    new Tarea
-        //    {
-        //        Id_Tarea = 1,
-        //        Descripcion = "Comprar"
-        //    },
-        //    new Tarea
-        //    {
-        //        Id_Tarea = 2,
-        //        Descripcion = "Ventas"
-        //    }
-        //};
+        [HttpPut("{id}")]
+        public ActionResult<Tarea> UpdateTarea(int id, [FromBody] TareaDTO tareaDto)
+        {
+            // Validar que el DTO no sea nulo
+            if (tareaDto == null)
+                return BadRequest(new { message = "El campo 'tarea' es obligatorio." });
 
-        //[HttpGet("{id}")]
-        //public ActionResult<Tarea> GetTareasById(int id)
-        //{
-        //    var tarea = tareas.FirstOrDefault(g => g.Id_Tarea == id);
-        //    if (tarea is null)
-        //        return NotFound();
+            // Buscar la tarea existente por su id
+            var tareaExistente = _tarea.GetTareas().Find(t => t.IdTarea == id);
+            if (tareaExistente == null)
+                return NotFound(new { message = "Tarea no encontrada." });
 
-        //    return Ok(tarea);
-        //}
+            // Actualizar las propiedades de la tarea existente con los datos del DTO
+            tareaExistente.Descripcion = tareaDto.Descripcion;
+            tareaExistente.EstadoTarea = tareaDto.EstadoTarea;
+            tareaExistente.IdCategoria = tareaDto.IdCategoria;
+            tareaExistente.IdUsuario = tareaDto.IdUsuario;
+            tareaExistente.FechaActualizacion = DateTime.UtcNow;
 
-        //[HttpPost]
-        //public ActionResult<Tarea> AddTareas(Tarea newTarea)
-        //{
-        //    if (newTarea is null)
-        //        return BadRequest();
+            // Actualizar la tarea en el repositorio
+            _tarea.UpdateTarea(tareaExistente);
 
-        //    newTarea.Id_Tarea = tareas.Max(g => g.Id_Tarea) + 1;
-        //    tareas.Add(newTarea);
-        //    return CreatedAtAction(nameof(GetTareasById), new { id = newTarea.Id_Tarea }, newTarea);
-        //}
+            // Devolver la tarea actualizada
+            return Ok(tareaExistente);
+        }
 
-        //[HttpPut("{id}")]
-        //public IActionResult UpdateTareas(int id, Tarea updatedTareas)
-        //{
-        //    var tarea = tareas.FirstOrDefault(g => g.Id_Tarea == id);
-        //    if (tarea is null)
-        //        return NotFound();
-
-        //    tarea.Descripcion = updatedTareas.Descripcion;
-
-        //    return NoContent();
-        //}
-
-        //[HttpDelete("{id}")]
-        //public IActionResult DeleteTareas(int id)
-        //{
-        //    var tarea = tareas.FirstOrDefault(g => g.Id_Tarea == id);
-        //    if (tarea is null)
-        //        return NotFound();
-
-        //    tareas.Remove(tarea);
-
-        //    return NoContent();
-        //}
     }
 }
