@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using TareasApi.Data;
+using TareasApi.EndPoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,5 +28,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+//app.MapTareaEndPoints();
+app.MapGroup("/api/tarea").MapTareaEndPoints();
 
 app.Run();

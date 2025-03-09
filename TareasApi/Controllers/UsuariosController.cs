@@ -63,6 +63,7 @@ namespace TareasApi.Controllers
                 return NotFound();
 
            _context.Usuarios.Remove(usuarios);
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
