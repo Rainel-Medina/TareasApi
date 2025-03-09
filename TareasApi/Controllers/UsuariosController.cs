@@ -1,71 +1,86 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CapaDatos;
+using CapaNegocio.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TareasApi.Data;
+
 
 namespace TareasApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuariosController(TareasDbContext context) : ControllerBase
+    public class UsuariosController : ControllerBase
     {
-        private readonly TareasDbContext _context = context;
+        //private readonly TareasDbContext _context = context;
+
+        IUsuarios _usuarios;
+        public UsuariosController(IUsuarios usuarios)
+        {
+            _usuarios = usuarios;
+        }
 
         [HttpGet]
-        public async Task<ActionResult<List<Usuarios>>> GetUsuarios()
+        public IEnumerable<Usuario> GetUsuarios()
         {
-            return Ok(await _context.Usuarios.ToArrayAsync());
+            return _usuarios.GetUsuarios();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Usuarios>> GetUsuariosById(int id)
-        {
-            var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario is null)
-                return NotFound();
+        //[HttpGet]
+        //public async Task<ActionResult<List<Usuarios>>> GetUsuarios()
+        //{
+        //    return Ok(await _context.Usuarios.ToArrayAsync());
+        //}
 
-            return Ok(usuario);
-        }
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Usuarios>> GetUsuariosById(int id)
+        //{
+        //    var usuario = await _context.Usuarios.FindAsync(id);
+        //    if (usuario is null)
+        //        return NotFound();
 
-        [HttpPost]
-        public async Task<ActionResult<Usuarios>> AddUsuarios(Usuarios newUsuario)
-        {
-            if (newUsuario is null)
-                return BadRequest();
+        //    return Ok(usuario);
+        //}
 
-           _context.Usuarios.Add(newUsuario);
-            await _context.SaveChangesAsync();
+        //[HttpPost]
+        //public async Task<ActionResult<Usuarios>> AddUsuarios(Usuarios newUsuario)
+        //{
+        //    if (newUsuario is null)
+        //        return BadRequest();
 
-            return CreatedAtAction(nameof(GetUsuariosById), new { id = newUsuario.Id_Usuario }, newUsuario);
-        }
+        //   _context.Usuarios.Add(newUsuario);
+        //    await _context.SaveChangesAsync();
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUsuarios(int id, Usuarios updatedUsuarios)
-        {
-            var usuarios = await _context.Usuarios.FindAsync(id);
-            if (usuarios is null)
-                return NotFound();
+        //    return CreatedAtAction(nameof(GetUsuariosById), new { id = newUsuario.Id_Usuario }, newUsuario);
+        //}
 
-            usuarios.Nombre = updatedUsuarios.Nombre;
-            usuarios.Apellido = updatedUsuarios.Apellido;
-            usuarios.Sexo = updatedUsuarios.Sexo;
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdateUsuarios(int id, Usuarios updatedUsuarios)
+        //{
+        //    var usuarios = await _context.Usuarios.FindAsync(id);
+        //    if (usuarios is null)
+        //        return NotFound();
 
-            await _context.SaveChangesAsync();
+        //    usuarios.Nombre = updatedUsuarios.Nombre;
+        //    usuarios.Apellido = updatedUsuarios.Apellido;
+        //    usuarios.Sexo = updatedUsuarios.Sexo;
 
-            return NoContent();
-        }
+        //    await _context.SaveChangesAsync();
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUsuarios(int id)
-        {
-            var usuarios = await _context.Usuarios.FindAsync(id);
-            if (usuarios is null)
-                return NotFound();
+        //    return NoContent();
+        //}
 
-           _context.Usuarios.Remove(usuarios);
-            await _context.SaveChangesAsync();
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteUsuarios(int id)
+        //{
+        //    var usuarios = await _context.Usuarios.FindAsync(id);
+        //    if (usuarios is null)
+        //        return NotFound();
 
-            return NoContent();
-        }
+        //   _context.Usuarios.Remove(usuarios);
+        //    await _context.SaveChangesAsync();
+
+        //    return NoContent();
+        //}
     }
 }

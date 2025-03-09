@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CapaDatos;
+using CapaNegocio.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -8,26 +10,37 @@ namespace TareasApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TareasController(TareasDbContext context) : ControllerBase
+    public class TareasController: ControllerBase
     {
 
-        private readonly TareasDbContext _context = context;
+        ITarea _tarea;
+        public TareasController(ITarea tarea)
+        {
+            _tarea = tarea;
+        }
 
         [HttpGet]
-        public async Task<ActionResult<List<Tarea>>> GetTareas()
+        public IEnumerable<Tarea> GetTareas()
         {
-            return Ok(await _context.Tarea.ToArrayAsync());
+            return _tarea.GetTareas();
         }
+        //private readonly TareasDbContext _context = context;
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Tarea>> GetTareasById(int id)
-        {
-            var tarea = await _context.Tarea.FindAsync(id);
-            if (tarea is null)
-                return NotFound();
+        //[HttpGet]
+        //public async Task<ActionResult<List<Tarea>>> GetTareas()
+        //{
+        //    return Ok(await _context.Tarea.ToArrayAsync());
+        //}
 
-            return Ok(tarea);
-        }
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Tarea>> GetTareasById(int id)
+        //{
+        //    var tarea = await _context.Tarea.FindAsync(id);
+        //    if (tarea is null)
+        //        return NotFound();
+
+        //    return Ok(tarea);
+        //}
 
 
 

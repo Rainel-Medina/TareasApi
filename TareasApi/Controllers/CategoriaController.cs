@@ -11,11 +11,11 @@ namespace TareasApi.Controllers
     {
         private readonly TareasDbContext _context = context;
 
-        [HttpGet]
-        public async Task<ActionResult<List<Categoria>>> GetTareas()
-        {
-            return Ok(await _context.Categoria.ToArrayAsync());
-        }
+        //[HttpGet]
+        //public async Task<ActionResult<List<Categoria>>> GetTareas()
+        //{
+        //    return Ok(await _context.Categoria.ToArrayAsync());
+        //}
 
     }
 }
