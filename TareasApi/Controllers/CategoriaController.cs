@@ -1,9 +1,11 @@
 ﻿using CapaDatos;
-using CapaDatos.DTO;
+using CapaDatos.DTO.CategoriaDTO;
+using CapaDatos.DTO.TareaDTO;
 using CapaNegocio.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TareasApi.Infraestructura.Repositories;
 using static CapaNegocio.Interfaces.ITarea;
 
 namespace TareasApi.Controllers
@@ -12,22 +14,25 @@ namespace TareasApi.Controllers
     [ApiController]
     public class CategoriaController : ControllerBase
     {
+        private readonly IGenericRepository<Categorium> _repository;
+
         ICategoria _categoria;
-        public CategoriaController(ICategoria categoria)
+        public CategoriaController(IGenericRepository<Categorium> repository)
         {
-            _categoria = categoria;
+            _repository = repository;
         }
 
         [HttpGet]
-        public IEnumerable<Categorium> GetCategoria()
+        public async Task<ActionResult<IEnumerable<Categorium>>> GetCategoria()
         {
-            return _categoria.GetCategorias();
+            var categoria = await _repository.GetAll();
+            return Ok(categoria.ToList());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Categorium>> GetCategoriaById(int id)
         {
-            var categoria = await Task.Run(() => _categoria.GetCategorias().Find(u => u.IdCategoria == id));
+            var categoria = await _repository.Get(u => u.IdCategoria == id);
             if (categoria is null)
                 return NotFound();
 
@@ -35,41 +40,19 @@ namespace TareasApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Categorium> AddCategoria([FromBody] CategoriaDTO newCategoria)
+        public async Task<ActionResult<Tarea>> AddCategoria(CategoriaDTO newCategoriaDTO)
         {
-            if (newCategoria == null)
-                return BadRequest(new { message = "El campo 'newCategoria' es obligatorio." });
-
-            var categoria = new Categorium
-            {
-                NombreCategoria = newCategoria.NombreCategoria,
-                FechaCreacion = DateTime.UtcNow, // Asigna un valor válido
-            };
-
-            _categoria.AddCategoria(categoria);
-
-            return CreatedAtAction(nameof(GetCategoriaById), new { id = categoria.IdCategoria }, categoria);
+            await _repository.Add(newCategoriaDTO);
+            return Ok();
         }
-
 
         [HttpPut("{id}")]
-        public ActionResult<Categorium> UpdateCategoria(int id, [FromBody] CategoriaDTO categoriaDto)
+        public async Task<ActionResult<Categorium>> UpdateCategoria(int id, UpdateCategoriaDTO updateCategoriaDto)
         {
-            if (categoriaDto == null)
-                return BadRequest(new { message = "El campo 'categoria' es obligatorio." });
 
-            var categoriaExistente = _categoria.GetCategorias().Find(u => u.IdCategoria == id);
-            if (categoriaExistente == null)
-                return NotFound(new { message = "Categoria no encontrada." });
+            await _repository.Update(updateCategoriaDto);
+            return Ok();
 
-            categoriaExistente.NombreCategoria = categoriaDto.NombreCategoria;
-            categoriaExistente.FechaActualizacion = DateTime.UtcNow;
-
-            _categoria.UpdateCategoria(categoriaExistente);
-
-            return Ok(categoriaExistente);
-        }
-
-
+        }     
     }
 }

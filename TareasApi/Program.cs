@@ -32,6 +32,8 @@ builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericReposi
 builder.Services.AddScoped<ITarea, LogicaTarea>();
 builder.Services.AddScoped<IUsuarios, LogicaUsuarios>();
 builder.Services.AddScoped<ICategoria, LogicaCategoria>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 
 var app = builder.Build();
 

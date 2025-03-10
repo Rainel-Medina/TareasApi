@@ -1,10 +1,12 @@
 ﻿using CapaDatos;
 using CapaDatos.DTO;
+using CapaDatos.DTO.CategoriaDTO;
 using CapaDatos.DTO.TareaDTO;
 using CapaDatos.DTO.UsuarioDTO;
 using CapaDatos.Infraestructura;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Threading;
 
 namespace TareasApi.Infraestructura.Repositories
 {
@@ -94,6 +96,32 @@ namespace TareasApi.Infraestructura.Repositories
                 tarea.IdUsuario = updateTareaDto.IdUsuario;
                 tarea.FechaActualizacion = DateTime.UtcNow;
                 _context.Set<Tarea>().Update(tarea);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task Add(CategoriaDTO newCategoriaDTO)
+        {
+            var categoria = new Categorium
+            {
+                NombreCategoria = newCategoriaDTO.NombreCategoria,
+                FechaCreacion = DateTime.UtcNow, // Asigna un valor válido
+            };
+
+            await _context.Set<Categorium>().AddAsync(categoria);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Update(UpdateCategoriaDTO updateCategoriaDto)
+        {
+            var categoria = await _context.Set<Categorium>().FindAsync(updateCategoriaDto.IdCategoria);
+            if (categoria != null)
+            {
+                // Map properties from usuarioDto to usuario
+
+                categoria.NombreCategoria = updateCategoriaDto.NombreCategoria;
+                categoria.FechaActualizacion = DateTime.UtcNow;
+                _context.Set<Categorium>().Update(categoria);
                 await _context.SaveChangesAsync();
             }
         }
