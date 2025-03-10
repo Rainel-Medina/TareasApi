@@ -26,7 +26,7 @@ builder.Services.AddDbContext<TareasContext>(options =>
 ////configurar las interfaces para que el controlador las pueda usar
 builder.Services.AddScoped<ITarea, LogicaTarea>();
 builder.Services.AddScoped<IUsuarios, LogicaUsuarios>();
-//builder.Services.AddScoped<ICategorias, LogicaCategorias>();
+builder.Services.AddScoped<ICategoria, LogicaCategoria>();
 
 var app = builder.Build();
 
