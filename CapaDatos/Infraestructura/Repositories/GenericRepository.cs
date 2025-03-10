@@ -1,5 +1,6 @@
 ﻿using CapaDatos;
 using CapaDatos.DTO;
+using CapaDatos.DTO.TareaDTO;
 using CapaDatos.DTO.UsuarioDTO;
 using CapaDatos.Infraestructura;
 using Microsoft.EntityFrameworkCore;
@@ -59,7 +60,40 @@ namespace TareasApi.Infraestructura.Repositories
                 usuario.Nombre = usuarioDto.Nombre;
                 usuario.Apellido = usuarioDto.Apellido;
                 usuario.Sexo = usuarioDto.Sexo;
+                usuario.FechaActualizacion = DateTime.UtcNow; // Asigna la fecha de actualización
                 _context.Set<Usuario>().Update(usuario);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task Add(TareaDTO newTareaDTO)
+        {
+            var tarea = new Tarea
+            {
+                Descripcion = newTareaDTO.Descripcion,
+                EstadoTarea = newTareaDTO.EstadoTarea,
+                IdCategoria = newTareaDTO.IdCategoria,
+                IdUsuario = newTareaDTO.IdUsuario,
+                FechaCreacion = DateTime.UtcNow, // Asigna la fecha de creación
+            };
+
+            await _context.Set<Tarea>().AddAsync(tarea);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Update(UpdateTareaDTO updateTareaDto)
+        {
+
+            var tarea = await _context.Set<Tarea>().FindAsync(updateTareaDto.IdTarea);
+            if (tarea != null)
+            {
+                // Map properties from usuarioDto to usuario
+                tarea.Descripcion = updateTareaDto.Descripcion;
+                tarea.EstadoTarea = updateTareaDto.EstadoTarea;
+                tarea.IdCategoria = updateTareaDto.IdCategoria;
+                tarea.IdUsuario = updateTareaDto.IdUsuario;
+                tarea.FechaActualizacion = DateTime.UtcNow;
+                _context.Set<Tarea>().Update(tarea);
                 await _context.SaveChangesAsync();
             }
         }

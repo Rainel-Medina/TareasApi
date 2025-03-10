@@ -13,8 +13,6 @@ namespace CapaDatos.DTO.UsuarioDTO
         public int Sexo { get; set; }
         public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
 
-        public DateTime FechaActualizacion { get; set; } = DateTime.UtcNow;
-
     }
 
 }

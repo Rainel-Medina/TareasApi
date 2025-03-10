@@ -1,4 +1,5 @@
-﻿using CapaDatos.DTO.UsuarioDTO;
+﻿using CapaDatos.DTO.TareaDTO;
+using CapaDatos.DTO.UsuarioDTO;
 using System.Linq.Expressions;
 
 namespace TareasApi.Infraestructura.Repositories
@@ -19,5 +20,7 @@ namespace TareasApi.Infraestructura.Repositories
         Task Add(UsuarioDTO newUsuario);
         //Task Update(UsuarioDTO usuarioDto);
         Task Update(UpdateUsuarioDTO usuarioDto);
+        Task Add(TareaDTO newTareaDTO);
+        Task Update(UpdateTareaDTO updateTareaDto);
     }
 }
