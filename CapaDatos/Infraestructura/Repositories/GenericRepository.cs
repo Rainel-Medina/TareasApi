@@ -1,9 +1,9 @@
-﻿using CapaDatos;
-using CapaDatos.DTO;
+﻿using CapaDatos.DTO;
 using CapaDatos.DTO.CategoriaDTO;
 using CapaDatos.DTO.TareaDTO;
 using CapaDatos.DTO.UsuarioDTO;
 using CapaDatos.Infraestructura;
+using CapaDatos.Modelos;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Threading;

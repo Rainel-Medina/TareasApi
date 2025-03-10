@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CapaDatos.Modelos;
 using Microsoft.EntityFrameworkCore;
 
 namespace CapaDatos.Infraestructura;
@@ -12,6 +13,10 @@ public partial class TareasContext : DbContext
 
     public TareasContext(DbContextOptions<TareasContext> options)
         : base(options)
+    {
+    }
+
+    public TareasContext(object request)
     {
     }
 

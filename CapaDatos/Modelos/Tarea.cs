@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace CapaDatos;
+namespace CapaDatos.Modelos;
 
 public partial class Tarea
 {

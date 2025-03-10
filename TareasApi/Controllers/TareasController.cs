@@ -1,7 +1,9 @@
-﻿using CapaDatos;
-using CapaDatos.DTO.TareaDTO;
+﻿using CapaDatos.DTO.TareaDTO;
 using CapaDatos.DTO.UsuarioDTO;
+using CapaDatos.Modelos;
 using CapaNegocio.Interfaces;
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -84,3 +86,44 @@ namespace TareasApi.Controllers
         }
     }
 }
+
+
+
+//using FluentValidation;
+//using MediatR;
+//using ErrorOr;
+
+//namespace TareasApi.Validacion.Behaviors
+//{
+//    public class ValidationBehavior<TResquest, TResponse> : IPipelineBehavior<TResquest, TResponse>
+//        where TResquest : IRequest<TResponse>
+//        where TResponse : IErrorOr
+//    {
+//        private readonly IValidator<TResquest>? _validator;
+//        public ValidationBehavior(IValidator<TResquest>? validator = null)
+//        {
+//            _validator = validator;
+//        }
+//        public async Task<TResponse> Handle(
+//            TResquest request, CancellationToken cancellationToken,
+//            RequestHandlerDelegate<TResponse> next)
+//        {
+//            if (_validator is null)
+//            {
+//                return await next();
+//            }
+
+
+//            var validationResults = await _validator.ValidateAsync(request, cancellationToken);
+//            if (validationResults.IsValid)
+//                return await next();
+
+//            var errors = validationResults.Errors.Select(e => e.ErrorMessage);
+//        }
+
+//        public Task<TResponse> Handle(TResquest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+//        {
+//            throw new NotImplementedException();
+//        }
+//    }
+//}

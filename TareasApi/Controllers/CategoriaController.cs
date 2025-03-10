@@ -1,6 +1,6 @@
-﻿using CapaDatos;
-using CapaDatos.DTO.CategoriaDTO;
+﻿using CapaDatos.DTO.CategoriaDTO;
 using CapaDatos.DTO.TareaDTO;
+using CapaDatos.Modelos;
 using CapaNegocio.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CapaDatos;
+namespace CapaDatos.Modelos;
 
 public partial class Categorium
 {

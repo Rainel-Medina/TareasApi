@@ -5,6 +5,8 @@ using CapaNegocio.Interfaces;
 using CapaNegocio.Clases;
 using TareasApi.Infraestructura.Repositories;
 using CapaDatos.Infraestructura;
+using MediatR;
+using TareasApi.Validacion.Behaviors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +36,8 @@ builder.Services.AddScoped<IUsuarios, LogicaUsuarios>();
 builder.Services.AddScoped<ICategoria, LogicaCategoria>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
+//configurar el uso de MediatR
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 var app = builder.Build();
 

@@ -1,5 +1,5 @@
-﻿using CapaDatos;
-using CapaDatos.DTO.UsuarioDTO;
+﻿using CapaDatos.DTO.UsuarioDTO;
+using CapaDatos.Modelos;
 using CapaNegocio.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
