@@ -16,14 +16,13 @@ namespace TareasApi.Controllers
     {
         ITarea _tarea;
         private readonly IUsuarios _usuarios;
+        private readonly ICategoria _categorias; // Añadir esta línea
 
-        //ICategoria _categorias; // Añadir esta línea
-
-        public TareasController(ITarea tarea, IUsuarios usuarios) // Modificar esta línea
+        public TareasController(ITarea tarea, IUsuarios usuarios, ICategoria categorias) // Modificar esta línea
         {
             _tarea = tarea;
             _usuarios = usuarios; // Añadir esta línea
-            //_categorias = categorias; // Añadir esta línea
+            _categorias = categorias; // Añadir esta línea
         }
 
         [HttpGet]
@@ -49,12 +48,12 @@ namespace TareasApi.Controllers
             return Ok(usuarios);
         }
 
-        //[HttpGet("categorias")]
-        //public ActionResult<IEnumerable<Categorium>> GetCategorias()
-        //{
-        //    var categorias = _categorias.GetCategorias();  // Método en LogicaCategorias que devuelve todas las categorías
-        //    return Ok(categorias);
-        //}
+        [HttpGet("categorias")]
+        public ActionResult<IEnumerable<Categorium>> GetCategorias()
+        {
+            var categorias = _categorias.GetCategorias();  // Método en LogicaCategorias que devuelve todas las categorías
+            return Ok(categorias);
+        }
 
         // Endpoint para agregar una tarea
         [HttpPost]

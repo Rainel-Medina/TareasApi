@@ -21,7 +21,7 @@ namespace CapaNegocio.Clases
 
         public List<Tarea> GetTareas()
         {
-            return db.Tareas.Include(t => t.IdCategoriaNavigation).Include(t => t.IdCategoriaNavigation).ToList();
+            return db.Tareas.Include(t => t.IdCategoriaNavigation).Include(t => t.IdUsuarioNavigation).ToList();
         }
 
         public void AddTareas(Tarea tarea)

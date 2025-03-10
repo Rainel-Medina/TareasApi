@@ -14,10 +14,10 @@ namespace CapaNegocio.Interfaces
         {
             List<Usuario> GetUsuarios();
         }
-        //public interface ICategorias
-        //{
-        //    List<Categoria> GetCategorias();
-        //}
+        public interface ICategorias
+        {
+            List<Categorium> GetCategorias();
+        }
         List<Tarea> GetTareas();
         void AddTareas(Tarea tarea);
         void UpdateTarea(Tarea tarea);

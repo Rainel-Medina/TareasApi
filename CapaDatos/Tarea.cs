@@ -19,8 +19,7 @@ public partial class Tarea
     public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
     public DateTime FechaActualizacion { get; set; } = DateTime.UtcNow;
 
-    [JsonIgnore]
-    public Categorium IdCategoriaNavigation { get; set; }
+    public virtual Categorium IdCategoriaNavigation { get; set; } = null!;
 
     public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 }
