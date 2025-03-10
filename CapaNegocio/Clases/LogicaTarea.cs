@@ -1,4 +1,5 @@
 ﻿using CapaDatos;
+using CapaDatos.Infraestructura;
 using CapaNegocio.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;

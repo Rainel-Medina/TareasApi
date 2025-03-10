@@ -1,9 +1,10 @@
-using CapaDatos;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using TareasApi.EndPoints;
 using CapaNegocio.Interfaces;
 using CapaNegocio.Clases;
+using TareasApi.Infraestructura.Repositories;
+using CapaDatos.Infraestructura;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,10 @@ builder.Services.AddSwaggerGen();
 //configurar el acceso a Datos
 builder.Services.AddDbContext<TareasContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Fixing the errors by removing the extra dot and ensuring the method call is correct
+builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 
 //var conn = builder.Configuration.GetConnectionString("AppConnection");
 //builder.Services.AddDbContext<TareasContext>(options =>

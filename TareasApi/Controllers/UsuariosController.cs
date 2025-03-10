@@ -1,9 +1,11 @@
 ﻿using CapaDatos;
-using CapaDatos.DTO;
+using CapaDatos.DTO.UsuarioDTO;
 using CapaNegocio.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using TareasApi.Infraestructura.Repositories;
 
 
 namespace TareasApi.Controllers
@@ -12,24 +14,25 @@ namespace TareasApi.Controllers
     [ApiController]
     public class UsuariosController : ControllerBase
     {
-        //private readonly TareasDbContext _context = context;
+        private readonly IGenericRepository<Usuario> _repository;
 
         IUsuarios _usuarios;
-        public UsuariosController(IUsuarios usuarios)
+        public UsuariosController(IGenericRepository<Usuario> repository)
         {
-            _usuarios = usuarios;
+            _repository = repository;
         }
 
         [HttpGet]
-        public IEnumerable<Usuario> GetUsuarios()
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
         {
-            return _usuarios.GetUsuarios();
+            var usuarios = await _repository.GetAll();
+            return Ok(usuarios.ToList());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Usuario>> GetUsuariosById(int id)
         {
-            var usuario = await Task.Run(() => _usuarios.GetUsuarios().Find(u => u.IdUsuario == id));
+            var usuario = await _repository.Get(u => u.IdUsuario == id);
             if (usuario is null)
                 return NotFound();
 
@@ -37,42 +40,19 @@ namespace TareasApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Usuario> AddUsuarios([FromBody] UsuarioDTO newUsuario)
+        public async Task<ActionResult<Usuario>> AddUsuarios( UsuarioDTO newUsuario)
         {
-            if (newUsuario == null)
-                return BadRequest(new { message = "El campo 'newUsuario' es obligatorio." });
-
-            var usuario = new Usuario
-            {
-                Nombre = newUsuario.Nombre,
-                Apellido = newUsuario.Apellido,
-                Sexo = newUsuario.Sexo,
-                FechaCreacion = DateTime.UtcNow, // Asigna un valor válido
-            };
-
-            _usuarios.AddUsuario(usuario);
-
-            return CreatedAtAction(nameof(GetUsuariosById), new { id = usuario.IdUsuario }, usuario);
+            await _repository.Add(newUsuario);
+            return Ok();
         }
 
         [HttpPut("{id}")]
-        public ActionResult<Usuario> UpdateUsuario(int id, [FromBody] UsuarioDTO usuarioDto)
-        {
-            if (usuarioDto == null)
-                return BadRequest(new { message = "El campo 'usuario' es obligatorio." });
-
-            var usuarioExistente = _usuarios.GetUsuarios().Find(u => u.IdUsuario == id);
-            if (usuarioExistente == null)
-                return NotFound(new { message = "Usuario no encontrado." });
-
-            usuarioExistente.Nombre = usuarioDto.Nombre;
-            usuarioExistente.Apellido = usuarioDto.Apellido;
-            usuarioExistente.Sexo = usuarioDto.Sexo;
-            usuarioExistente.FechaActualizacion = DateTime.UtcNow;
-
-            _usuarios.UpdateUsuario(usuarioExistente);
-
-            return Ok(usuarioExistente);
+        public async Task<ActionResult<Usuario>> UpdateUsuario(int id, UpdateUsuarioDTO updateUsuarioDto)
+        {   
+           
+            await _repository.Update(updateUsuarioDto);
+            return Ok();
+            
         }
 
 

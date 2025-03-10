@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace CapaDatos;
+namespace CapaDatos.Infraestructura;
 
 public partial class TareasContext : DbContext
 {
