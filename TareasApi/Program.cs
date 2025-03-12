@@ -12,6 +12,19 @@ using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var corsPolicy = "AllowSpecificOrigin";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(corsPolicy, builder =>
+    {
+        builder.WithOrigins("http://localhost:5173") // Cambia según tu frontend
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
+
+
 // Add services to the container.
 
 #pragma warning disable CS0618 // El tipo o el miembro están obsoletos
@@ -61,6 +74,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors(corsPolicy);
 
 //app.MapTareaEndPoints();
 //app.MapGroup("/api/tarea").MapTareaEndPoints();
