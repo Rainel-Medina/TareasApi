@@ -1,4 +1,5 @@
-﻿using CapaDatos.DTO.UsuarioDTO;
+﻿using CapaDatos.DTO.TareaDTO;
+using CapaDatos.DTO.UsuarioDTO;
 using CapaDatos.Modelos;
 using CapaNegocio.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -42,76 +43,50 @@ namespace TareasApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Usuario>> AddUsuarios( UsuarioDTO newUsuario)
         {
+            if (string.IsNullOrEmpty(newUsuario.Nombre))
+            {
+                return BadRequest(new { Message = "El nombre es obligatorio" });
+            }
+
+            if (string.IsNullOrEmpty(newUsuario.Apellido))
+            {
+                return BadRequest(new { Message = "El estado de la tarea es obligatorio" });
+            }
+
+            if (newUsuario.Sexo <= 0)
+            {
+                return BadRequest(new { Message = "El sexo del usuario es obligatorio" });
+            }
+
             await _repository.Add(newUsuario);
-            return Ok();
+
+            return Ok(new { Message = "Usuario creado correctamente", UsuarioDTO = newUsuario });
+
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<Usuario>> UpdateUsuario(int id, UpdateUsuarioDTO updateUsuarioDto)
-        {   
-           
+        {
+
+            if (string.IsNullOrEmpty(updateUsuarioDto.Nombre))
+            {
+                return BadRequest(new { Message = "El nombre es obligatorio" });
+            }
+
+            if (string.IsNullOrEmpty(updateUsuarioDto.Apellido))
+            {
+                return BadRequest(new { Message = "El apellido es obligatorio" });
+            }
+
+            if (updateUsuarioDto.Sexo <= 0)
+            {
+                return BadRequest(new { Message = "El sexo del usuario es obligatorio" });
+            }
+
             await _repository.Update(updateUsuarioDto);
-            return Ok();
-            
+
+            return Ok(new { Message = "Usuario actualizado correctamente", UpdateUsuarioDTO = updateUsuarioDto });
+
         }
-
-
-
-        //[HttpGet]
-        //public async Task<ActionResult<List<Usuarios>>> GetUsuarios()
-        //{
-        //    return Ok(await _context.Usuarios.ToArrayAsync());
-        //}
-
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Usuario>> GetUsuariosById(int id)
-        //{
-        //    var usuario = await _usuarios.GetUsuarios.FindAsync(id);
-        //    if (usuario is null)
-        //        return NotFound();
-
-        //    return Ok(usuario);
-        //}
-
-        //[HttpPost]
-        //public async Task<ActionResult<Usuarios>> AddUsuarios(Usuarios newUsuario)
-        //{
-        //    if (newUsuario is null)
-        //        return BadRequest();
-
-        //   _context.Usuarios.Add(newUsuario);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction(nameof(GetUsuariosById), new { id = newUsuario.Id_Usuario }, newUsuario);
-        //}
-
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateUsuarios(int id, Usuarios updatedUsuarios)
-        //{
-        //    var usuarios = await _context.Usuarios.FindAsync(id);
-        //    if (usuarios is null)
-        //        return NotFound();
-
-        //    usuarios.Nombre = updatedUsuarios.Nombre;
-        //    usuarios.Apellido = updatedUsuarios.Apellido;
-        //    usuarios.Sexo = updatedUsuarios.Sexo;
-
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
-
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteUsuarios(int id)
-        //{
-        //    var usuarios = await _context.Usuarios.FindAsync(id);
-        //    if (usuarios is null)
-        //        return NotFound();
-
-        //   _context.Usuarios.Remove(usuarios);
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
     }
 }

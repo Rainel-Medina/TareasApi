@@ -1,4 +1,5 @@
-﻿using CapaDatos.DTO.TareaDTO;
+﻿using CapaDatos.DTO.CategoriaDTO;
+using CapaDatos.DTO.TareaDTO;
 using CapaDatos.DTO.UsuarioDTO;
 using CapaDatos.Modelos;
 using CapaNegocio.Interfaces;
@@ -58,16 +59,43 @@ namespace TareasApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Tarea>> AddTareas(TareaDTO newTareaDTO)
         {
+            if (string.IsNullOrEmpty(newTareaDTO.Descripcion ))
+            {
+                return BadRequest(new { Message = "La descripcion es obligatorio" });
+            }
+
+            if (newTareaDTO.EstadoTarea <= 0)
+            {
+                return BadRequest(new { Message = "El estado de la tarea es obligatorio" });
+            }
+
+            if (newTareaDTO.IdCategoria <= 0)
+            {
+                return BadRequest(new { Message = "La categoría es obligatorio" });
+            }
+
+            if (newTareaDTO.IdUsuario <= 0)
+            {
+                return BadRequest(new { Message = "El usuario es obligatorio" });
+            }
+
             await _repository.Add(newTareaDTO);
-            return Ok();
+
+            return Ok(new { Message = "Tarea creada correctamente", TareaDTO = newTareaDTO });
+
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<Tarea>> UpdateTarea(int id, UpdateTareaDTO updateTareaDto)
         {
+            if (string.IsNullOrEmpty(updateTareaDto.Descripcion))
+            {
+                return BadRequest(new { Message = "La descripcion es obligatorio" });
+            }
 
             await _repository.Update(updateTareaDto);
-            return Ok();
+
+            return Ok(new { Message = "Tarea actualizada correctamente", UpdateTareaDTO = updateTareaDto });
 
         }
 
@@ -86,44 +114,3 @@ namespace TareasApi.Controllers
         }
     }
 }
-
-
-
-//using FluentValidation;
-//using MediatR;
-//using ErrorOr;
-
-//namespace TareasApi.Validacion.Behaviors
-//{
-//    public class ValidationBehavior<TResquest, TResponse> : IPipelineBehavior<TResquest, TResponse>
-//        where TResquest : IRequest<TResponse>
-//        where TResponse : IErrorOr
-//    {
-//        private readonly IValidator<TResquest>? _validator;
-//        public ValidationBehavior(IValidator<TResquest>? validator = null)
-//        {
-//            _validator = validator;
-//        }
-//        public async Task<TResponse> Handle(
-//            TResquest request, CancellationToken cancellationToken,
-//            RequestHandlerDelegate<TResponse> next)
-//        {
-//            if (_validator is null)
-//            {
-//                return await next();
-//            }
-
-
-//            var validationResults = await _validator.ValidateAsync(request, cancellationToken);
-//            if (validationResults.IsValid)
-//                return await next();
-
-//            var errors = validationResults.Errors.Select(e => e.ErrorMessage);
-//        }
-
-//        public Task<TResponse> Handle(TResquest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-//        {
-//            throw new NotImplementedException();
-//        }
-//    }
-//}

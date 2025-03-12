@@ -42,16 +42,28 @@ namespace TareasApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Tarea>> AddCategoria(CategoriaDTO newCategoriaDTO)
         {
+            if (string.IsNullOrEmpty(newCategoriaDTO.NombreCategoria))
+            {
+                return BadRequest(new { Message = "El nombre de la categoría es obligatorio " });
+            }
+
             await _repository.Add(newCategoriaDTO);
-            return Ok();
+
+            return Ok(new { Message = "Categoría creada correctamente", CategoriaDTO = newCategoriaDTO });
         }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult<Categorium>> UpdateCategoria(int id, UpdateCategoriaDTO updateCategoriaDto)
         {
+            if (string.IsNullOrEmpty(updateCategoriaDto.NombreCategoria))
+            {
+                return BadRequest(new { Message = "El nombre de la categoría es obligatorio " });
+            }
 
             await _repository.Update(updateCategoriaDto);
-            return Ok();
+
+            return Ok(new { Message = "Categoría actualizada correctamente", UpdateCategoriaDTO = updateCategoriaDto });
 
         }     
     }

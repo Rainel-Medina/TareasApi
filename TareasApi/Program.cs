@@ -6,14 +6,22 @@ using CapaNegocio.Clases;
 using TareasApi.Infraestructura.Repositories;
 using CapaDatos.Infraestructura;
 using MediatR;
-using TareasApi.Validacion.Behaviors;
+using FluentValidation;
+using CapaDatos.DTO.CategoriaDTO;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+#pragma warning disable CS0618 // El tipo o el miembro están obsoletos
+builder.Services.AddControllers()
+     .AddFluentValidation(config =>
+     {
+         config.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
+     });
+#pragma warning restore CS0618 // El tipo o el miembro están obsoletos
+                              // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
@@ -36,9 +44,6 @@ builder.Services.AddScoped<IUsuarios, LogicaUsuarios>();
 builder.Services.AddScoped<ICategoria, LogicaCategoria>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
-//configurar el uso de MediatR
-builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,6 +53,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
+
 }
 
 app.UseHttpsRedirection();
